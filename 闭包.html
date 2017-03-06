@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div id="oDiv"></div>
+</body>
+<script>
+    //匿名函数会报错，封装成表达式，通过表达式自我执行
+    (function box() {
+        console.log('zhang');
+    })();
+    //函数里的匿名函数产生了闭包
+    function box() {
+        return function() {
+            return 'zhang san';
+        }
+    }
+    console.log(box()());
+    //常见创建闭包的方式 ，就是在一个函数内部创建另一个函数，通过另一个函数访问这个函数的局部变量
+    //闭包是指有权访问另一个函数作用域的变量的函数
+    //优缺点：可以把局部变量驻存在内存中，可以避免使用全局变量
+    //  全局变量污染导致应用程序的不可预知性
+    function box1() {
+        var arr = [];
+        for (var i = 0; i < 5; i++) {
+
+            arr[i] = function () {
+                return i;
+            };
+            console.log(arr[i]);
+        }
+        return arr;
+    }
+    var b = box1();
+    console.log(b);
+    //闭包中this在运行时指向window，因为闭包不属于这个对象的属性或方法？？？？
+    var user = 'The Window';
+    var obj = {
+        user: 'The Obj',
+        getUserFun: function () {
+            return function () {
+                return this.user;
+            }
+        },
+        getUerFun2: function () {
+            return this.user;
+        }
+    };
+    console.log(obj.getUserFun()());
+    console.log(obj.getUerFun2());
+
+    //内存泄漏     可以在最后将oDiv解除引用来避免递归
+    function box3() {
+        var oDiv = document.getElementById('oDiv'); //oDiv 用完之后一直驻留在内存
+        oDiv.onclick = function () {
+            alert(oDiv.innerHTML); //这里用oDiv 导致内存泄漏
+        };
+        oDiv = null;
+    }
+    box3();
+
+    //模仿块级作用域(私有作用域)
+    (function () {
+        //这里是块级作用域
+    })();
+    //在全局作用域中使用块级作用域可以减少闭包占用的内存问题，因为没有指向匿名函数
+    //的引用。只要函数执行完毕，就可以立即销毁其作用域链了。????
+    function box4(count) {
+        (function () {
+            for (var i = 0; i<count; i++) {}
+        })();
+//        alert(i); //报错，无法访问
+    }
+    box4(2);
+//    使用了块级作用域(私有作用域)后，匿名函数中定义的任何变量，都会在执行结束时被销毁
+//
+//    在全局作用域中使用块级作用域可以减少闭包占用的内存问题，因为没有指向匿名函数
+//    的引用。只要函数执行完毕，就可以立即销毁其作用域链了
+
+
+    function box5(count) {
+        for (var i=0; i<count; i++) {}
+//        var i; //就算重新声明，也不会前面的值
+        alert(i);
+    }
+    box5(2);
+    //递归
+
+
+//    function box6(count) {
+//        for (var i=0; i<count; i++) {}
+//        alert(i); //i 不会因为离开了for 块就失效
+//    }
+//    box6(2);
+//    function box7(count) {
+//        for (var i=0; i<count; i++) {}
+//        var i; //就算重新声明，也不会前面的值
+//        alert(i);
+//    }
+//    box7(2);
+
+
+//    在全局作用域中使用块级作用域可以减少闭包占用的内存问题，因为没有指向匿名函数
+//    的引用。只要函数执行完毕，就可以立即销毁其作用域链了。
+    (function () {
+        var box = [1,2,3,4];
+        alert(box); //box 出来就不认识了
+    })();
+
+
+    (function () {
+        var age = 100;
+        function run() {
+            return '运行中...';
+        }
+        Box = function () {};
+//        function Box() {}    这种方法变成了私有函数后面无法访问
+        Box.prototype.go = function () { //原型方法
+            return age + run();
+        };
+    })();
+    var box8 = new Box();
+    alert(box8.go());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <img src="img/javaScript/构造函数、原型模式方式.png">
+</body>
+<script src="plugin/jquery.js"></script>
+<script>
+//工厂模式 解决了实例化对象产生大量重复的问题，但是有一个识别问题，根本无法搞清楚哪个是哪个的实例化对象
+//    function creatObject(name, age) {
+//        var obj = new Object();
+//        obj.name = name;
+//        obj.age = age;
+//        obj.run = function () {
+//            return this.name + this.age;
+//        };
+//        return obj;
+//    }
+//    var box1 = creatObject('jack', '20');
+//    var box2 = creatObject('tom', '18');
+//    console.log(box1.run());    // jack20
+//    console.log(box2.run());    //  tom18
+//    console.log(typeof box1);   //  object
+//    console.log(box2 instanceof Object);    //  true
+
+//(function(){
+//    var a = b = 3;
+//})();
+//console.log(typeof b, typeof a);
+
+
+//构造函数
+//    function Box(user, age) {
+//        this.user = user;
+//        this.age = age;
+//        this.run = function () {
+//            return this.user + this.age;
+//        }
+//    }
+//    function Desk(user, age) {
+//        this.user = user;
+//        this.age = age;
+//        this.run = function () {
+//            return this.user + this.age;
+//        }
+//    }
+//    //构造函数没有new Object() 后台会自动执行 var obj = new Object()
+//    //this 相当于obj
+//    //不需要返回对象引用，是后台自动返回的
+//    var box1 = new Box('jrm1', '11');  //实例化之后地址是唯一的
+//    var box2 = new Box('zhang', '18');
+//    var box3 = new Desk('sun', '28');
+//    console.log(box1 instanceof Box);  //true
+//    console.log(box3 instanceof Box);  //false  box3是Desk的引用对象
+//    console.log(box1.run == box2.run); //false
+//    var o = new Object();
+//    Box.call(o, 'Tom', '1');  //使用call方法对象冒充
+//    console.log(o.run());
+//    Box.apply(o, ['Jack', '1001']); //使用apply方法对象冒充
+//    console.log(o.run());
+
+
+//原型
+//    function Box() {
+//        this.id = 2;
+//    } //构造函数内什么都没有，如果有叫做实例属性、实例方法
+//    Box.prototype.name = 'Lee';  //原型属性
+//    Box.prototype.age = '20';
+//    Box.prototype.run = function () {
+//        return this.name + this.age;
+//    };
+//    var box1 = new Box();
+//    var box2 = new Box();
+//    //如果是实例方法，不同的实例化，他们的方法地址是不一样的
+//    //如果是原型方法，那么他们地址是共享的，大家都是一样的
+//    console.log(box1.run == box1.run);  //  true
+//    console.log(box1.prototype);    //  undefined  每一个对象都有__proto__属性，但不一定有prototype
+//    console.log(Box.prototype);     //  Object {name: "Lee", age: "20", run: function(){}}
+//    console.log(Box.constructor);   //  function Function() { [native code] }
+//    console.log(box1.__proto__);    //  Object {name: "Lee", age: "20", run: function(){}}
+                                      //  __proto__属性是实例指向原型对象的一个指针，他的作用就是指向构造函数的原型属性constructor
+//    console.log(box1.constructor);  //构造属性，可以获取构造函数本身 function Box() {this.id = 2;}
+//                                    //作用是被原型指针定位，然后得到构造函数本身
+//                                    //其实就代表构造函数对象实例对应的原型对象的作用
+//可以尝试猜测下下面打印出来是什么，再用图表画出了，会有一目了然的感觉
+//var arr = new Array();
+//console.log(arr.__proto__);
+//console.log(arr.constructor);
+//console.log(Array.prototype);
+//console.log(Array.__proto__);
+//console.log(Array.prototype.constructor);
+//console.log(Array.constructor);
+//console.log(Array.constructor.__proto__);
+//console.log(Array.constructor.__proto__.__proto__);
+//console.log(Array.prototype.__proto__);
+//console.log(Array.prototype.__proto__.proto__);
+
+
+//子面量的方式
+        //为了让属性和方法更好的体现封装的效果，并减少不必要的输入
+//    function Box(){}
+//    Box.prototype = {
+////      constructor: Box, //强制指向Box
+//        name: 'Lee',
+//        age: '20',
+//        run: function () {
+//            return this.name + this.age;
+//        }
+//    };
+//    //和构造函数区别constructor不会指向实例，而是指向Object
+//    //为什么会这样，Box.preototype={},这种写法就是创建了一个新对象，每创建一个函数
+//    //同时会创建他的prototype,prototype会自动获取constructor属性，新的constructor重写了原来的
+//    //constructor,而他没有指定的构造函数那么就默认为Object
+//    var box = new Box();
+//    console.log(box.constructor);   //function Object() { [native code] }
+//    //重写了原型对象
+//    Box.prototype = {
+//        age: 200    //这里不会保留之前原型的任何信息了，
+//                    // 把原来的原型对象和构造函数对象实例之间的关系切断了
+//    };
+//    var box1 = new Box();
+//    console.log(box1.name); //undefined
+//    console.log(box1.age);  //200
+
+
+
+//原型最大的缺点和优点--共享
+
+//组合构造函数+原型模式 但是这种写法很诡异，最好写在一起
+    //解决了传参和共享的问题
+//    function Box(name, age) {
+//        this.name = name;
+//        this.age = age;
+//        this.family = ['哥哥', '姐姐'];
+//    }
+//    Box.prototype = {
+//        constructor: Box,
+//        run: function() {
+//            return this.name + this.age;
+//        }
+//    };
+//    //动态原型模式
+//    function Box1(name, age) {
+//        this.name = name;
+//        this.age = age;
+//        if(typeof this.run != 'function'){
+//            console.log('开始执行');
+//            Box1.prototype.run = function () {
+//                return this.name + this.age;
+//            };
+//            console.log('执行结束');
+//        }
+//
+//    }
+        //原型的初始化，只要第一次初始化 就可以了，没有必要每次构造函数实例的时候都初始化
+//    var box = new Box1();
+//    var box1 = new Box1();
+
+
+
+
+
+//继承，通过原型链实现
+//    function Box() {      //被继承的函数叫做超类型（父类，基类）
+//        this.name = 'Lee';
+//    }
+//    function Desk() {     //继承的函数叫做子类型（子类，派生类）
+//        this.age = 100;
+//    }
+//    //通过原型链继承，超类型实例化之后的对象实例，复制给子类型的原型属性
+//    //new Box()会将Box构造里的信息和原型里的信息都交给Desk
+//    Desk.prototype = new Box();
+//    var desk = new Desk();
+//    console.log(desk.name); //就近原则，实例里有就返回，没有到原型里去找
+
+
+//为了解决引用类型和共享类型无法传参的问题，采用一种叫借用构造函数的技术或者对象冒充
+    //使用对象冒充继承
+    function Box(name, age){
+        this.name = name;
+        this.age = age;
+    }
+    function Desk(name, age){
+        Box.call(this, name, age);
+    }
+    var desk = new Desk('Lee', 100);
+    console.log(desk.name);
+
+
+
+//1.原型链继承 2.借用构造函数继承（对象冒充继承） 3.组合继承（结合前两种）
+//4.原型式继承
+
+
+
+
+
+
+
+
+
+//    var arr = new Array();
+//    console.log(arr.__proto__);
+//    console.log(Array);
+//    console.log(Array.__proto__);
+//    console.log(Array.__proto__.__proto__);
+//    console.log(Array.__proto__.__proto__.__proto__);
+//    console.log(Array.prototype);
+//    console.log(Array.prototype.__proto__);
+
+//    console.log(Array.prototype.__proto__);
+//    console.log(Array.prototype.__proto__.prototype);
+
+
+//    创建对象
+//    工厂模式
+//    构造函数
+//    原型
+//    __proto__属性是实例指向原型对象的一个指针，他的作用就是指向构造函数的原型属性constructor
+//        通过这两个属性就可以访问原型里的属性和方法了
+//    使用字面量的方式
+//    组合构造函数 + 原型模式 解决传参和共享的问题
+//    动态原型模式 // 将所有信息封装到函数体内
+//        constructor 属性返回对创建此对象的数组函数的引用
+//    继承无法传参
+
+
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>正则表达式</title>
+    <link rel="stylesheet" href="plugin/bootstrap.css">
+
+    <style>
+       .box {
+           border: 1px solid #666666;
+           position: relative;
+           margin: 20px auto;
+           width: 300px;
+           height: 300px;
+       }
+        #box1{
+            border: 1px solid #666666;
+            position: absolute;
+            left: auto;
+            right: 0;
+
+            height: 200px;
+            /*max-width: 200px;*/
+        }
+        #box2{
+            margin-top: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box" >
+        <div id="box1"></div>
+
+    </div>
+<div id="box2">12121</div>
+<!--正则表达式： 是一个描述字符模式的对象，主要是用来处理字符-->
+<!--创建： new   var box = new RegExp('box','ig')-->
+       <!--字面量 var box = /box/ig      这种方式不可以传参-->
+</body>
+<script src="plugin/jquery.js"></script>
+<script src="plugin/bootstrap.js"></script>
+<script>
+
+//    $('.box1').style.height = 600 + 'px';
+$("#box1").css("width", "600");
+//1.正则的定义，test、exec的使用
+
+//    var box = function (aa) {
+//        var pattern = new RegExp(aa, 'ig');
+////        var pattern = /aa/ig;            //字面量的方式不可以传参
+//        var str = 'This is a Box!，That is a Box too';      //字符串中是否包含模式中的正则
+////        console.log(pattern.test(str));  //test 匹配一致返回true，否则false
+////        console.log(pattern.exec(str));  //返回数组 没有返回null
+////    //String对象提供了4个使用正则表达式的方法
+////        console.log(str.match(pattern));  //返回数组,内容为str中的子串 没有返回null
+////        console.log(str.search(pattern));  //返回第一个出现的位置，空格也算，否则返回-1
+////        console.log(str.replace(pattern, 'Tom'));  //将box替换成Tom
+////        console.log(str.split(pattern));  //将box去掉，拆分成数组
+//
+//    };
+//    box('box');
+
+
+console.log($("#box2").offset().top);
+console.log($("#box2").height());
+//    var input = document.getElementsByTagName('input')[0];
+//    input.onclick = function () { //事件绑定的执行函数
+//        console.log(arguments); //1，得到一个隐藏参数
+//    };
+//    var pattern = /google|baidu|bing/; //匹配三种其中一种字符串
+//    var str = 'google';
+//    console.log(pattern.test(str));
+//
+//var data = new Date();
+//console.log(data.getMinutes());
+
+
+
+//var pattern = /8(.*)8/; //获取8..8 之间的任意字符
+//var str = 'This is 8google8 81google8';
+//str.match(pattern);
+//console.log(RegExp.$1);
+
+
+Date.prototype.format = function (fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) {
+        console.log(RegExp);
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+        console.log(RegExp.$1);
+    }
+    console.log(fmt);
+    for (var i in o) {
+        if (new RegExp(  "(" + i + ")" ).test(fmt)) {
+            console.log(typeof i);
+            fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[i] : ('00' + o[i]).substr(-2, RegExp.$1.length));
+        }
+    }
+    return fmt;
+
+};
+
+//console.log(new Date(new Date().setMonth(new Date().getMonth() - 1)));
+//    var array = [
+//        {bus: 'all', id: 1, name:'谢'},
+//        {bus: 'all', id: 2, name:'成'},
+//        {bus: 'exp', id: 3, name:'张'}
+//    ];
+//    var arr = [];
+//    var result = {};
+//    for (var i = 0; i < array.length; i++) {
+//        var count = 0;
+//        for (var j = 0; j < arr.length; j++) {
+//            if (arr[j] == array[i].bus) {
+//                count++;
+//            }
+//        }
+//        if (!count) {
+//            arr.push(array[i].bus);
+//        }
+//    }
+//    for (var i = 0; i < arr.length; i++) {
+//        result[arr[i]] = [];
+//        for (var j = 0; j < array.length; j++) {
+//            if (arr[i] == array[j].bus) {
+//                result[arr[i]].push(array[j]);
+//            }
+//        }
+//    }
+//    console.log(result);
+
+//    var array1 = [
+//        {time: "2014-Q1",cash: 150,scale: 10},
+//        {time: "2014-Q2",cash: 130,scale: 9, af: 21}
+//    ];
+//    var arr = [];
+//    for (var i = 0; i < array1.length; i++) {
+//        for (o in array1[i]) {
+//            var onoff = true;
+//            for (var j = 0; j < arr.length; j++) {
+//                if (o == arr[j]) {
+//                    onoff = false;
+//                }
+//            }
+//            if (onoff) {
+//                arr.push(o);
+//            }
+//        }
+//    }
+//    console.log(arr);
+//    var result = {};
+//    for (var i = 0; i < arr.length; i++) {
+//        result[arr[i]] = [];
+//        for (var j = 0; j < array1.length; j++) {
+//            var count = 0;
+//            for (o in array1[j]) {
+//                if (o == arr[i]) {
+//                    result[arr[i]].push(array1[j][o]);
+//                    count++;
+//                }
+//            }
+//            if (!count) {
+//                result[arr[i]].push('-');
+//            }
+//        }
+//    }
+////    console.log(result);
+//    var aa = {'cc': 12};
+//    aa['bb'] = [];
+//    if (!aa['bb']) console.log('bb');
+//    if (!aa['aa']) console.log('aa');
+//    console.log(typeof aa['cc']);
+
+var dateUtil = {
+    getBeforeDay: function (date, num) { //获取当前时间前几天日期
+//        return new Date(new Date().setDate(date.getDate() - num));
+        var time = new Date(date);
+        time.setDate(date.getDate() - num);
+    },
+    getBeforeMonth: function (date, num) { //获取当前时间前几月日期，勿用该方法获取日
+        return new Date(new Date().setMonth(date.getMonth() - num));
+    },
+    nowMonthPercent: function (fixNum) { //获取当前月时间百分比
+
+    },
+    monthPercent: function (date, fixNum) { //获取指定月的时间进度百分比
+
+    }
+};
+var aa1 = dateUtil.getBeforeDay(new Date(), 1); //Thu Jan 12 2017 17:16:19 GMT+0800 (中国标准时间)
+console.log(aa1);         //Thu Jan 05 2017 08:50:17 GMT+0800
+var aa2 = dateUtil.getBeforeMonth(new Date(), 1); //Thu Jan 12 2017 17:16:19 GMT+0800 (中国标准时间)
+console.log(aa2);         //Thu Jan 05 2017 08:50:17 GMT+0800
+//    new Date().setMonth()
+var box = new Date('6/13/2011');
+box.setDate(2);
+
+console.log(box);
+</script>
+</html>
